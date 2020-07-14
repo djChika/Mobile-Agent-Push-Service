@@ -6,7 +6,6 @@ import { Notification_Subscribers } from '../entity/Notification_Subscribers';
 const connectionOptions: ConnectionOptions = {
   type: 'mssql',
   host: credentials.host,
-  domain: credentials.domain ?? undefined,
   schema: 'dbo',
   username: credentials.username,
   password: credentials.password,

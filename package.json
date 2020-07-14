@@ -27,7 +27,7 @@
     "build": "tsc",
     "start": "ts-node-dev --respawn ./src/index.ts",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
-    "start:prod": "node ./build/app.js",
+    "start:prod": "node ./build/index.js",
     "migration:run": "ts-node ./node_modules/typeorm/cli.js migration:run",
     "eslint": "eslint --fix src"
   }
