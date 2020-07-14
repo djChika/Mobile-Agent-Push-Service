@@ -20,7 +20,10 @@ export const sendPushNotification = async (
       [key: string]: unknown;
     };
   }
-): Promise<unknown> => {
+): Promise<{
+  shippingErrors: ShippingError[];
+  usersNotRegistered: Notification_Subscribers[];
+}> => {
   const tokens = subscribers.map(x => x.Push_Token);
   const validTokens = getValidTokens(tokens);
   const notifications = buildNotifications(validTokens, message);
