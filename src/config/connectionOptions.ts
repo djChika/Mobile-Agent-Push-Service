@@ -10,6 +10,7 @@ const connectionOptions: ConnectionOptions = {
   username: credentials.username,
   password: credentials.password,
   database: credentials.database,
+  domain: credentials.domain,
   entities: [Notification_Subscribers],
   synchronize: true,
   options: {
