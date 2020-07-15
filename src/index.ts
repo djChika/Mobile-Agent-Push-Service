@@ -6,6 +6,8 @@ import bodyParser from 'body-parser';
 import helmet from 'helmet';
 import routes from './routes';
 
+const PORT = 5002;
+
 createConnection(connectionOptions)
   .then(async () => {
     const app = express();
@@ -15,8 +17,8 @@ createConnection(connectionOptions)
 
     app.use('/', routes);
 
-    app.listen(3000, () => {
-      console.log('Server started on port 3000!');
+    app.listen(PORT, () => {
+      console.log('Server started on port ' + PORT);
     });
   })
   .catch(error => console.log(error));
