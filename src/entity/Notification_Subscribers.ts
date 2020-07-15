@@ -33,7 +33,7 @@ export class Notification_Subscribers {
   @Column('nvarchar', { length: 20 })
   declare Token_Type: string;
 
-  @CreateDateColumn({ nullable: false, default: () => 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn({ nullable: false })
   @IsNotEmpty()
   declare createdAt: Date;
 
