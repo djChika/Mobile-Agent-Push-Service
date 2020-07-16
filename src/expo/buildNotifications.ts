@@ -14,7 +14,7 @@ const buildNotifications = (
     to: token,
     title: message.title,
     body: message.body,
-    data: message.data
+    data: message.data || {}
   }));
   return notifications;
 };
