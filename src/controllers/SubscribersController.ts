@@ -1,7 +1,8 @@
 import { sendPushNotification } from './../expo';
 import { Notification_Subscribers } from '../entity/Notification_Subscribers';
 import { Request, Response } from 'express';
-import SubscribersRepository from './../repository/Subscribers';
+import SubscribersRepository from '../repository/Subscribers';
+import NotificationsRepository from '../repository/Notifications';
 
 class SubscribersController {
   static push = async (req: Request, res: Response): Promise<Response> => {
@@ -12,21 +13,39 @@ class SubscribersController {
       });
     }
 
+    if (!data.target) {
+      return res.status(400).send({
+        error: 'missing target in data'
+      });
+    }
+
     const subscribers = (await SubscribersRepository.findByAgentId(
       agentId
     )) as Notification_Subscribers[];
 
-    return sendPushNotification(subscribers, {
+    return NotificationsRepository.write(
+      [agentId],
+      data.target,
+      JSON.stringify(data),
       title,
-      body,
-      data
-    })
-      .then(({ shippingErrors, usersNotRegistered }) => {
-        return res.json({ shippingErrors, usersNotRegistered });
+      body
+    )
+      .then(() => {
+        return sendPushNotification(subscribers, {
+          title,
+          body,
+          data
+        })
+          .then(({ shippingErrors, usersNotRegistered }) => {
+            return res.json({ shippingErrors, usersNotRegistered });
+          })
+          .catch(error => {
+            console.log('SubscribersController -> error', error);
+            return res.status(500).send(error);
+          });
       })
-      .catch(error => {
-        console.log('SubscribersController -> error', error);
-        return res.status(500).send(error);
+      .catch(err => {
+        return res.status(500).send(err);
       });
   };
 
@@ -38,19 +57,38 @@ class SubscribersController {
       });
     }
 
-    const subscribers = (await SubscribersRepository.read()) as Notification_Subscribers[];
+    if (!data.target) {
+      return res.status(400).send({
+        error: 'missing target in data'
+      });
+    }
 
-    return sendPushNotification(subscribers, {
+    const subscribers = (await SubscribersRepository.read()) as Notification_Subscribers[];
+    const agentIds = subscribers.map(x => x.AgentId);
+
+    return NotificationsRepository.write(
+      agentIds,
+      data.target,
+      JSON.stringify(data),
       title,
-      body,
-      data
-    })
-      .then(({ shippingErrors, usersNotRegistered }) => {
-        return res.json({ shippingErrors, usersNotRegistered });
+      body
+    )
+      .then(() => {
+        return sendPushNotification(subscribers, {
+          title,
+          body,
+          data
+        })
+          .then(({ shippingErrors, usersNotRegistered }) => {
+            return res.json({ shippingErrors, usersNotRegistered });
+          })
+          .catch(error => {
+            console.log('SubscribersController -> error', error);
+            return res.status(500).send(error);
+          });
       })
-      .catch(error => {
-        console.log('SubscribersController -> error', error);
-        return res.status(500).send(error);
+      .catch(err => {
+        return res.status(500).send(err);
       });
   };
 }
